@@ -1,13 +1,6 @@
 // Win32Project1.cpp: определяет точку входа для приложения.
 //
 #include "stdafx.h"
-#include "snake.h"
-#include "kbdctl.h"
-#include "congfx.h"
-#include "oglgfx.h"
-#include <iostream>
-#include <conio.h>
-#include <windows.h>
 #include "Win32Project1.h"
 #include "StatModule.h"
 #define FILE_NAME "../stat.txt"
@@ -96,16 +89,11 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return RegisterClassEx(&wcex);
 }
 
-//
 //   ФУНКЦИЯ: InitInstance(HINSTANCE, int)
-//
 //   НАЗНАЧЕНИЕ: сохраняет обработку экземпляра и создает главное окно.
-//
 //   КОММЕНТАРИИ:
-//
 //        В данной функции дескриптор экземпляра сохраняется в глобальной переменной, а также
 //        создается и выводится на экран главное окно программы.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    HWND hWnd;
@@ -125,16 +113,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
 //  ФУНКЦИЯ: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
 //  НАЗНАЧЕНИЕ:  обрабатывает сообщения в главном окне.
-//
 //  WM_COMMAND	- обработка меню приложения
 //  WM_PAINT	-Закрасить главное окно
 //  WM_DESTROY	 - ввести сообщение о выходе и вернуться.
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -157,7 +140,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		wmEvent = HIWORD(wParam);
 		int Exit;
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_MYBUTTON)) 
-			//MessageBox(hWnd,"StartGame","MessageBox",MB_OK|MB_ICONWARNING);
 				Game(argc, argv);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT)) 
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
@@ -191,7 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_TIMER:
-		//основной код змийки будет тут
+		//Написать модуль анимации для лаунчера
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
@@ -206,7 +188,6 @@ INT_PTR CALLBACK About(HWND DlgAbout, UINT message, WPARAM wParam, LPARAM lParam
 	{
 	case WM_INITDIALOG:
 		return (INT_PTR)TRUE;
-
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
 		{
@@ -220,6 +201,7 @@ INT_PTR CALLBACK About(HWND DlgAbout, UINT message, WPARAM wParam, LPARAM lParam
 
 INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	list<string>Cfg;
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
@@ -302,13 +284,14 @@ INT_PTR CALLBACK Records(HWND DlgStat, UINT message, WPARAM wParam, LPARAM lPara
 		}
 		if((HIWORD(wParam)==0) && (LOWORD(wParam)==IDCANCEL))
 		{
-			//сброс статистики
 			int Reset = MessageBox(DlgStat, "Do u want reset stats?", "Reset Stat", MB_YESNO|MB_ICONQUESTION);
 			if(Reset == IDYES){
 				/*
 				удаление файла статистики
 				деаллокейт вектора статистики (обнуление)
 				*/
+				DeleteFile("../stat.txt");
+				V.clear();
 			}
 		}
 	}

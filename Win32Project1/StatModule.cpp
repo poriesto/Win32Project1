@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "StatModule.h"
 #define LENGTH_SCORE 10
+
 vector<Stat> ReadFromFile(char *filename)
 {
 	ifstream data;
@@ -8,7 +9,8 @@ vector<Stat> ReadFromFile(char *filename)
 	string str;
 	Stat temp;
 	data.open(filename);
-	if(data.is_open())
+
+	if(data.is_open() && !data.fail())
 	{
 		while(!data.eof())
 		{
@@ -18,6 +20,10 @@ vector<Stat> ReadFromFile(char *filename)
 		}
 		data.close();
 		return V;
+	}
+	else
+	{
+		throw(data.bad()); 
 	}
 }
 //True alg
