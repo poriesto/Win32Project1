@@ -200,6 +200,7 @@ public:
 class snakeplayer
 {
 public:
+	char nickname;
 	int score;
 	int lives;
 };

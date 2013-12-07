@@ -13,14 +13,15 @@
 #define FILE_NAME "../stat.txt"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
+#define ID_MYBUTTON 1    /* идентификатор для кнопочки внутри главного окна */
+#define ID_BT 2
+#define ID_BT1 3
 // Глобальные переменные:
 HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
 TCHAR szWindowClass[MAX_LOADSTRING];			// имя класса главного окна
-#define ID_MYBUTTON 1    /* идентификатор для кнопочки внутри главного окна */
-#define ID_BT 2
-#define ID_BT1 3
-int RED, GREEN, BLUE;
+int argc = 2; 
+char *argv[] = {"GLUT_RGB", "-f"};
 // Отправить объявления функций, включенных в этот модуль кода:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -139,7 +140,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
-	int argc = 2; char *argv[] = {"-w", "RGB"};
 	RECT rec1;
 	GetClientRect(hWnd, &rec1);
 	switch (message)
@@ -223,6 +223,7 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
+	case WM_CREATE:
 	case WM_INITDIALOG:
 		return (INT_PTR)TRUE;
 	case WM_COMMAND:
@@ -231,16 +232,33 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 			EndDialog(DlgOptions, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
+		if(LOWORD(wParam)==1020)
+		{
+			HWND hwndCheck = GetDlgItem(DlgOptions, 1020);
+			LRESULT res = SendMessage (hwndCheck, BM_GETCHECK, 0, 0);
+			if(res == BST_CHECKED)
+			{
+				SetWindowText(DlgOptions, "Checked");
+				argv[1] = "-f";
+			}
+		}
+		if(LOWORD(wParam)==1021)
+		{
+			HWND hwndCheck = GetDlgItem(DlgOptions, 1021);
+			LRESULT res = SendMessage (hwndCheck, BM_GETCHECK, 0, 0);
+			if(res == BST_CHECKED)
+			{
+				SetWindowText(DlgOptions, "Checked");
+				argv[1] = "-w";
+			}
+		}
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==IDC_BUTTON1))
 		{ 
 			int confirm;
 			confirm = MessageBox(DlgOptions,"Are u sure?","Save settings",MB_YESNO|MB_ICONQUESTION);
 			if(confirm == IDYES)
 			{
-				/*RED = (int)GetDlgItem(hDlg,IDC_EDIT1);
-				GREEN = (int)GetDlgItem(hDlg, IDC_EDIT2);
-				BLUE = (int)GetDlgItem(hDlg, IDC_EDIT3);
-				EndDialog(hDlg, 0);*/
+				EndDialog(DlgOptions, 0);
 			}
 		}
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==IDC_BUTTON2)) 

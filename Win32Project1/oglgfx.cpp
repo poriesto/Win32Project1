@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "oglgfx.h"
-
-
+#include "resource.h"
 using std::cout;
 using std::cin;
 using std::endl;
 using std::cerr;
-
+using std::string;
 GLfloat angle;
 GLfloat radius = 3.0 + 3.0/2.0;
 GLdouble fct = 0;
@@ -18,7 +17,6 @@ snake* s;
 int speedsetting = 0;
 
 snakegame *maingame;
-
 oglgfx *maingfx;
 void processNormalKeys(unsigned char key, int x, int y);
 void processSpecialKeys(int key, int x, int y);
@@ -283,8 +281,7 @@ void text(char* string)
 
 void oglgfx :: init (int argc, char **argv)
 {
-//    int mainHwnd;
-	int  fullscreen    ;
+	int  fullscreen;
 	char modestring [50];
 	cout << "system: SuperSnake3D 2013" << endl;
 	cout << "system: ver.: 1.0" << endl;
@@ -295,6 +292,8 @@ void oglgfx :: init (int argc, char **argv)
 	cout << "system: setting up display modes" << endl;
 	if (argc > 1 && !strcmp(argv[1], "-w"))
 	  fullscreen = GL_FALSE;
+	else
+		fullscreen = GL_TRUE;
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	if (fullscreen) {
@@ -307,9 +306,9 @@ void oglgfx :: init (int argc, char **argv)
 		glutGameModeString(modestring);
 		glutEnterGameMode();
 	} else {
-		cout << "system: entering windowed mode." << endl;
-		//glutInitWindowSize(320, 320);
-		//glutCreateWindow("Snake 3D");
+		/*cout << "system: entering windowed mode." << endl;*/
+		glutInitWindowSize(320, 320);
+		glutCreateWindow("Snake 3D");
 		//glutFullScreen();
 
 	}
@@ -364,7 +363,7 @@ void processNormalKeys(unsigned char key, int x, int y)
 {
 
 	char buf[30];
-
+	HWND hWnd;
 	switch (key)
 	{
 	case 'q':
