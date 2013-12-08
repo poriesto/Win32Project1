@@ -363,7 +363,6 @@ void processNormalKeys(unsigned char key, int x, int y)
 {
 
 	char buf[30];
-	HWND hWnd;
 	switch (key)
 	{
 	case 'q':
