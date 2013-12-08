@@ -5,6 +5,8 @@ void WriteToFile(list<string> cfg, char *filename)
 {
 }
 
-list<string>ReadFromFile(char *filename)
+list<string>ReadConfigFromFile(char *filename)
 {
+	list<string> list;
+	return list;
 }

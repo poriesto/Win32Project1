@@ -82,6 +82,7 @@
     <ClInclude Include="congfx.h" />
     <ClInclude Include="kbdctl.h" />
     <ClInclude Include="oglgfx.h" />
+    <ClInclude Include="OptionsModule.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="snake.h" />
     <ClInclude Include="StatModule.h" />
@@ -93,6 +94,7 @@
     <ClCompile Include="congfx.cpp" />
     <ClCompile Include="kbdctl.cpp" />
     <ClCompile Include="oglgfx.cpp" />
+    <ClCompile Include="OptionsModule.cpp" />
     <ClCompile Include="snakecel.cpp" />
     <ClCompile Include="snakecls.cpp" />
     <ClCompile Include="snakectl.cpp" />

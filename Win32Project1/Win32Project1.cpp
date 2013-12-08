@@ -3,7 +3,9 @@
 #include "stdafx.h"
 #include "Win32Project1.h"
 #include "StatModule.h"
+#include "OptionsModule.h"
 #define FILE_NAME "../stat.txt"
+#define CONFIG "../config.h"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
 #define ID_MYBUTTON 1    /* идентификатор для кнопочки внутри главного окна */
@@ -202,11 +204,18 @@ INT_PTR CALLBACK About(HWND DlgAbout, UINT message, WPARAM wParam, LPARAM lParam
 INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	list<string>Cfg;
+	int param1, param2, param3;
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	case WM_CREATE:
 	case WM_INITDIALOG:
+		param1 = SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_ADDSTRING, 0, (LPARAM)"RGB");
+		param2 = SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_ADDSTRING, 1, (LPARAM)"ERD");
+		param3 = SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_ADDSTRING, 2, (LPARAM)"ghfdjk");
+		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param1, 0);
+		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param2, 1);
+		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param3, 2);
 		return (INT_PTR)TRUE;
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
@@ -215,7 +224,7 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 			return (INT_PTR)TRUE;
 		}
 		if(LOWORD(wParam)==1020)
-		{
+		{   //Fullscreen
 			HWND hwndCheck = GetDlgItem(DlgOptions, 1020);
 			LRESULT res = SendMessage (hwndCheck, BM_GETCHECK, 0, 0);
 			if(res == BST_CHECKED)
@@ -225,7 +234,7 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 			}
 		}
 		if(LOWORD(wParam)==1021)
-		{
+		{   //Windowed
 			HWND hwndCheck = GetDlgItem(DlgOptions, 1021);
 			LRESULT res = SendMessage (hwndCheck, BM_GETCHECK, 0, 0);
 			if(res == BST_CHECKED)
