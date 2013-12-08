@@ -6,5 +6,4 @@ Type of project: 2013 SPBSTU Students Training Project
 ================================
 Tags:  C++, STL, OpenGL                                                             
 ================================
-Description: Interpretation classic game "Snake" in 3D perspective. You must running on cube and eating food.                                                        
-
+Description: Interpretation classic game "Snake" in 3D perspective. You must running on cube and eating food.             
