@@ -32,7 +32,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-
  	// TODO: разместите код здесь.
 	MSG msg;
 	HACCEL hAccelTable;
@@ -101,7 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd;
 
    hInst = hInstance; // Сохранить дескриптор экземпляра в глобальной переменной
-   hWnd = CreateWindow(szWindowClass, "СУПИРЗМИЙКА", WS_OVERLAPPEDWINDOW,
+   hWnd = CreateWindow(szWindowClass, "SuperSnake3D", WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, 500, 500, NULL, NULL, hInstance, NULL);
 
    if (!hWnd)
@@ -127,9 +126,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	RECT rec1;
 	GetClientRect(hWnd, &rec1);
+	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
+	POINT cp;
+	cp.x = 0; cp.y = 0;
 	switch (message)
 	{
 	case WM_CREATE:
+		SetTimer(hWnd, 1, 100, NULL);
 		CreateWindow("button","Start Game",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
 			rec1.right/2-40,rec1.bottom/2,100,20,hWnd,(HMENU)ID_MYBUTTON,NULL,NULL);
 		CreateWindow("button","Options",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
@@ -169,6 +172,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
 		// TODO: добавьте любой код отрисовки...
+		MoveToEx(hdc, cp.x, cp.y, NULL);
+		LineTo(hdc, cp.x + 20, cp.y + 20);
+				cp.x = cp.x + 5;
+		cp.y = cp.y + 5;
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -176,6 +183,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_TIMER:
 		//Написать модуль анимации для лаунчера
+		GetClientRect(hWnd, &rec1);
+		cp.x = cp.x + 5;
+		cp.y = cp.y + 5;
+		InvalidateRect(hWnd, NULL, FALSE);
+		UpdateWindow(hWnd);
+	break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
