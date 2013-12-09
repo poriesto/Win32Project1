@@ -236,6 +236,9 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 			EndDialog(DlgOptions, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
+		if(wParam == IDC_LIST1)
+		{
+		}
 		if(LOWORD(wParam)==1020)
 		{   //Fullscreen
 			HWND hwndCheck = GetDlgItem(DlgOptions, 1020);
