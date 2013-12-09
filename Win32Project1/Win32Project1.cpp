@@ -2,8 +2,6 @@
 //
 #include "stdafx.h"
 #include "Win32Project1.h"
-#include "StatModule.h"
-#include "OptionsModule.h"
 #define FILE_NAME "../stat.txt"
 #define CONFIG "../config.h"
 #define MAX_LOADSTRING 100

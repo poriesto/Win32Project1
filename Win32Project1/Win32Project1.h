@@ -9,4 +9,6 @@
 #include "oglgfx.h"
 #include <iostream>
 #include <conio.h>
+#include "StatModule.h"
+#include "OptionsModule.h"
 #include <windows.h>
