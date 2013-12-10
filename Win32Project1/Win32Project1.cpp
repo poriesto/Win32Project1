@@ -215,6 +215,7 @@ INT_PTR CALLBACK About(HWND DlgAbout, UINT message, WPARAM wParam, LPARAM lParam
 INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	list<string>Cfg;
+	char str[256];
 	int param1, param2, param3;
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
@@ -228,15 +229,69 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param2, 1);
 		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param3, 2);
 		return (INT_PTR)TRUE;
+	case WM_SETFOCUS:
+		//SetFocus(IDC_LIST1);
+		return 0;
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
 		{
 			EndDialog(DlgOptions, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
-		if(wParam == IDC_LIST1)
-		{
-		}
+		 if(wParam == IDC_LIST1)   
+		 {        // Преобразуем к типу unsigned, так как       
+			 // константа LBN_ERRSPACE определена как     
+			 // отрицательное число       
+			 if(HIWORD(lParam) == (unsigned)LBN_ERRSPACE)      
+			 {         
+				 MessageBox(DlgOptions, "Мало памяти", "Error", MB_OK); 
+			 }
+			 // Если пользователь сделал двойной щелчок
+			 // по строке списка, выводим эту строку
+			 // на экран 
+			 else if(HIWORD(lParam) == LBN_DBLCLK)
+			 {         
+				 int uSelectedItem;    
+				 char Buffer[256];          
+				 // Определяем номер выделенной строки
+				 uSelectedItem = (int)SendMessage((HWND)IDC_LIST1, LB_GETCURSEL, 0, 0L);
+				 // Если в списке есть выделенная строка,    
+				 // выводим ее на экран           
+				 if(uSelectedItem != LB_ERR)        
+				 {             
+					 // Получаем выделенную строку            
+					 SendMessage((HWND)IDC_LIST1, LB_GETTEXT,               uSelectedItem, (LPARAM)Buffer);
+					 // Выводим ее на экран  
+					 MessageBox(DlgOptions, (LPSTR)Buffer, "Choice", MB_OK);           
+				 }  
+			 }
+			 // Если пользователь изменил выделенную
+			 // строку, выводим в окно новую
+			 // выделенную строку 
+			 else if(HIWORD(lParam) == LBN_SELCHANGE)       
+			 {   
+				 int uSelectedItem, nSize;
+				 char Buffer[256];
+				 HDC hdc;
+				 // Определяем номер новой выделенной строки
+				 uSelectedItem = (int)SendMessage((HWND)IDC_LIST1, LB_GETCURSEL, 0, 0L);
+				 if(uSelectedItem != LB_ERR) 
+				 {
+					 // Получаем строку
+					 SendMessage((HWND)IDC_LIST1, LB_GETTEXT,               uSelectedItem, (LPARAM)Buffer);
+					 // Получаем контекст отображения
+					 hdc = GetDC(DlgOptions);
+					 // Определяем длину строки
+					 nSize = lstrlen(Buffer);
+					 // Очищаем место для вывода строки
+					 TextOut(hdc, 250, 60,             (LPSTR)"                         ", 25);
+					 // Выводим строку
+					 TextOut(hdc, 250, 60, (LPSTR)Buffer, nSize);  
+					 // Освобождаем контекст отображения
+					 ReleaseDC(DlgOptions, hdc); 
+				 }
+			 }
+		 }
 		if(LOWORD(wParam)==1020)
 		{   //Fullscreen
 			HWND hwndCheck = GetDlgItem(DlgOptions, 1020);
@@ -271,7 +326,7 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 			EndDialog(DlgOptions, 0);
 		}
 		break;
-	}
+		 }
 	return (INT_PTR)FALSE;
 }
 
