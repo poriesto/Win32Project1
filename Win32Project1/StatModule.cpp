@@ -26,23 +26,7 @@ vector<Stat> ReadFromFile(char *filename)
 		throw(data.bad()); 
 	}
 }
-//True alg
-/*
-Stat CreateStat(string str){
-	Stat stat;
-	int pos = 0, cpos = 0, last;
-	string word, score;
-	int tmp;
-	cpos = str.find(" ", pos);
-	word = str.substr(pos, cpos - pos);
-	pos = str.find(word);
-	score = str.substr(pos);
-	tmp = atoi(score.c_str());
-	stat.name = word;
-	stat.score = tmp;
-	return stat;
-}*/
-//not true alg
+
 Stat CreateStat(string str){
 	Stat stat;
 	int pos = 0, cpos = 0, last;

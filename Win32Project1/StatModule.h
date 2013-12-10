@@ -3,9 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <conio.h>
 #include <string>
-#include <stdio.h>
 using namespace std;
 
 typedef struct

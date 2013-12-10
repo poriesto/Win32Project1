@@ -3,11 +3,10 @@
 #include <list>
 #include <iostream>
 #include <fstream>
-#include <conio.h>
 #include <string>
-#include <stdio.h>
 using namespace std;
 
 void WriteToFile(list<string> cfg, char *filename);
+void CreateOptions(HWND hwnd, list<string>cfg);
 list<string>ReadConfigFromFile(char *filename);
 #endif //OptionsModule

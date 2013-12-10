@@ -3,12 +3,14 @@
 #include "stdafx.h"
 #include "Win32Project1.h"
 #define FILE_NAME "../stat.txt"
-#define CONFIG "../config.h"
+#define CONFIG "../config.txt"
+#define GRAPHICS_MODE "../graphics.txt"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
-#define ID_MYBUTTON 1    /* идентификатор для кнопочки внутри главного окна */
-#define ID_BT 2
-#define ID_BT1 3
+#define ID_BT1 100    /* идентификатор для кнопочки внутри главного окна */
+#define ID_BT2 200
+#define ID_BT3 300
+#define ID_LIST 120
 // Глобальные переменные:
 HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
@@ -132,21 +134,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		SetTimer(hWnd, 1, 100, NULL);
 		CreateWindow("button","Start Game",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2,100,20,hWnd,(HMENU)ID_MYBUTTON,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2,100,20,hWnd,(HMENU)ID_BT1,NULL,NULL);
 		CreateWindow("button","Options",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+20,100,20,hWnd,(HMENU)ID_BT,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2+20,100,20,hWnd,(HMENU)ID_BT2,NULL,NULL);
 		CreateWindow("button","Exit",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+40,100,20,hWnd,(HMENU)ID_BT1,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2+40,100,20,hWnd,(HMENU)ID_BT3,NULL,NULL);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		int Exit;
-		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_MYBUTTON)) 
-				Game(argc, argv);
-		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT)) 
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT1)) 
+				Game(argc, argv);
+		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT2)) 
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
+		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT3)) 
 			Exit = MessageBox(hWnd, "Do u want exit from this beateful game?", "Exit from game", MB_YESNO|MB_ICONQUESTION);
 			if(Exit == IDYES){
 				DestroyWindow(hWnd);
@@ -214,91 +216,68 @@ INT_PTR CALLBACK About(HWND DlgAbout, UINT message, WPARAM wParam, LPARAM lParam
 
 INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	list<string>Cfg;
-	char str[256];
-	int param1, param2, param3;
+	static HWND optionsList;
+	list<string>GraphicsMode;
+	GraphicsMode = ReadConfigFromFile(GRAPHICS_MODE);
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
-	case WM_CREATE:
 	case WM_INITDIALOG:
-		param1 = SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_ADDSTRING, 0, (LPARAM)"RGB");
-		param2 = SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_ADDSTRING, 1, (LPARAM)"ERD");
-		param3 = SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_ADDSTRING, 2, (LPARAM)"ghfdjk");
-		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param1, 0);
-		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param2, 1);
-		SendDlgItemMessage(DlgOptions, IDC_LIST1, LB_SETITEMDATA, param3, 2);
+		optionsList = CreateWindow("listbox", NULL,
+			WS_CHILD | WS_VISIBLE | LBS_STANDARD | LBS_WANTKEYBOARDINPUT, 100, 0, 200, 100,
+			DlgOptions, (HMENU) ID_LIST, hInst, NULL);
+		SendMessage(optionsList, WM_SETREDRAW, FALSE, 0L);
+		CreateOptions(optionsList, GraphicsMode);
+		SendMessage(optionsList, WM_SETREDRAW, TRUE, 0L);
+		InvalidateRect(optionsList, NULL, TRUE);
 		return (INT_PTR)TRUE;
 	case WM_SETFOCUS:
-		//SetFocus(IDC_LIST1);
+		SetFocus(optionsList);
 		return 0;
 	case WM_COMMAND:
+		if(wParam == ID_LIST)
+		{
+			if(HIWORD(lParam) == (unsigned)LBN_ERRSPACE)
+			{
+				MessageBox(DlgOptions, "Мало памяти",
+					"Ошибка", MB_OK|MB_ICONERROR);
+			}
+			else if(HIWORD(lParam) == LBN_DBLCLK)
+			{
+				int Item;
+				char buf[256];
+				Item = (int)SendMessage(optionsList,
+					LB_GETCURSEL, 0, 0L);
+				if(Item != LB_ERR)
+				{
+					SendMessage(optionsList, LB_GETTEXT, Item, (LPARAM)buf);
+					argv[0] = buf;
+				}
+			}
+			else if(HIWORD(lParam) == LBN_SELCHANGE)
+			{
+				int Item;
+				char buf[256];
+				Item = (int)SendMessage(optionsList, LB_GETCURSEL, 0, 0L);
+				if(Item != LB_ERR)
+				{
+					SendMessage(optionsList, LB_GETTEXT, Item, (LPARAM)buf);
+					argv[0] = buf;
+				}
+			}
+		}
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
 		{
 			EndDialog(DlgOptions, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
-		 if(wParam == IDC_LIST1)   
-		 {        // Преобразуем к типу unsigned, так как       
-			 // константа LBN_ERRSPACE определена как     
-			 // отрицательное число       
-			 if(HIWORD(lParam) == (unsigned)LBN_ERRSPACE)      
-			 {         
-				 MessageBox(DlgOptions, "Мало памяти", "Error", MB_OK); 
-			 }
-			 // Если пользователь сделал двойной щелчок
-			 // по строке списка, выводим эту строку
-			 // на экран 
-			 else if(HIWORD(lParam) == LBN_DBLCLK)
-			 {         
-				 int uSelectedItem;    
-				 char Buffer[256];          
-				 // Определяем номер выделенной строки
-				 uSelectedItem = (int)SendMessage((HWND)IDC_LIST1, LB_GETCURSEL, 0, 0L);
-				 // Если в списке есть выделенная строка,    
-				 // выводим ее на экран           
-				 if(uSelectedItem != LB_ERR)        
-				 {             
-					 // Получаем выделенную строку            
-					 SendMessage((HWND)IDC_LIST1, LB_GETTEXT,               uSelectedItem, (LPARAM)Buffer);
-					 // Выводим ее на экран  
-					 MessageBox(DlgOptions, (LPSTR)Buffer, "Choice", MB_OK);           
-				 }  
-			 }
-			 // Если пользователь изменил выделенную
-			 // строку, выводим в окно новую
-			 // выделенную строку 
-			 else if(HIWORD(lParam) == LBN_SELCHANGE)       
-			 {   
-				 int uSelectedItem, nSize;
-				 char Buffer[256];
-				 HDC hdc;
-				 // Определяем номер новой выделенной строки
-				 uSelectedItem = (int)SendMessage((HWND)IDC_LIST1, LB_GETCURSEL, 0, 0L);
-				 if(uSelectedItem != LB_ERR) 
-				 {
-					 // Получаем строку
-					 SendMessage((HWND)IDC_LIST1, LB_GETTEXT,               uSelectedItem, (LPARAM)Buffer);
-					 // Получаем контекст отображения
-					 hdc = GetDC(DlgOptions);
-					 // Определяем длину строки
-					 nSize = lstrlen(Buffer);
-					 // Очищаем место для вывода строки
-					 TextOut(hdc, 250, 60,             (LPSTR)"                         ", 25);
-					 // Выводим строку
-					 TextOut(hdc, 250, 60, (LPSTR)Buffer, nSize);  
-					 // Освобождаем контекст отображения
-					 ReleaseDC(DlgOptions, hdc); 
-				 }
-			 }
-		 }
 		if(LOWORD(wParam)==1020)
 		{   //Fullscreen
 			HWND hwndCheck = GetDlgItem(DlgOptions, 1020);
 			LRESULT res = SendMessage (hwndCheck, BM_GETCHECK, 0, 0);
 			if(res == BST_CHECKED)
 			{
-				SetWindowText(DlgOptions, "Checked");
+				SendMessage((HWND)1021, BM_GETCHECK, 0,0);
 				argv[1] = "-f";
 			}
 		}
@@ -308,7 +287,7 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 			LRESULT res = SendMessage (hwndCheck, BM_GETCHECK, 0, 0);
 			if(res == BST_CHECKED)
 			{
-				SetWindowText(DlgOptions, "Checked");
+				SetWindowText(DlgOptions, "Windowed");
 				argv[1] = "-w";
 			}
 		}
