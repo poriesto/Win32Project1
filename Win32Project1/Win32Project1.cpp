@@ -154,6 +154,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hGame = GetDlgItem(hWnd, ID_BT1);
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
+		 hdc = BeginPaint(hWnd, &ps);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
