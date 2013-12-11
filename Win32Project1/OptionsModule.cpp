@@ -3,6 +3,11 @@
 
 void WriteToFile(list<string> cfg, char *filename)
 {
+	ofstream data;
+	data.open(filename);
+	if(!data.is_open() && !data.fail())
+	{
+	}
 }
 
 void CreateOptions(HWND hwnd, list<string>cfg)

@@ -5,6 +5,7 @@
 #define FILE_NAME "../stat.txt"
 #define CONFIG "../config.txt"
 #define GRAPHICS_MODE "../graphics.txt"
+#define BITMAP_PATH "../btm.bmp"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
 #define ID_BT1 100    /* идентификатор дл€ кнопочки внутри главного окна */
@@ -25,6 +26,7 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Options(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Records(HWND, UINT, WPARAM, LPARAM);
 void Game(int argc, char **argv);
+void BitMap(HDC hdc, LPCWSTR Path, int x, int y, int Width, int Height, DWORD Param);
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPTSTR    lpCmdLine,
@@ -119,6 +121,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_COMMAND	- обработка меню приложени€
 //  WM_PAINT	-«акрасить главное окно
 //  WM_DESTROY	 - ввести сообщение о выходе и вернутьс€.
+void Bitmap(HDC hdc, LPCSTR Path, int x, int y, int Width, int Height, DWORD Param)
+{
+    HBITMAP bmp = (HBITMAP) LoadImage(NULL,Path,IMAGE_BITMAP,0,0,LR_LOADFROMFILE);
+    HDC memdc = CreateCompatibleDC(hdc);
+    SelectObject(memdc,bmp);
+    BitBlt(hdc,x,y,Width,Height,memdc,0,0,Param);
+}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -129,6 +138,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
 	POINT cp;
 	cp.x = 0; cp.y = 0;
+	static HWND hGame;
+	static HWND hOptions;
+	static HWND hExit;
 	switch (message)
 	{
 	case WM_CREATE:
@@ -139,6 +151,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			rec1.right/2-40,rec1.bottom/2+20,100,20,hWnd,(HMENU)ID_BT2,NULL,NULL);
 		CreateWindow("button","Exit",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
 			rec1.right/2-40,rec1.bottom/2+40,100,20,hWnd,(HMENU)ID_BT3,NULL,NULL);
+		hGame = GetDlgItem(hWnd, ID_BT1);
+		hOptions = GetDlgItem(hWnd, ID_BT2);
+		hExit = GetDlgItem(hWnd, ID_BT3);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
@@ -168,6 +183,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 		break;
+
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
@@ -189,6 +205,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
 	break;
+	case WM_SETCURSOR:
+		{
+			if((HWND) wParam == hGame)
+			{
+				if (GetFocus() != hGame) SetFocus(hGame);
+				BitMap(hInst, _T(BITMAP_PATH), 20,20,20,20, SRCCOPY);
+			}
+		}
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

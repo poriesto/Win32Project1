@@ -112,6 +112,7 @@
     <ResourceCompile Include="Win32Project1.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Butterfly.bmp" />
     <Image Include="small.ico" />
     <Image Include="Win32Project1.ico" />
   </ItemGroup>
