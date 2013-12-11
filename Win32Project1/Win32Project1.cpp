@@ -133,6 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
+	HBRUSH whiteBrush = CreateSolidBrush(RGB(255,255,255));
 	RECT rec1;
 	GetClientRect(hWnd, &rec1);
 	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
