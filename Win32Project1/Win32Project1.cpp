@@ -26,7 +26,9 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Options(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Records(HWND, UINT, WPARAM, LPARAM);
 void Game(int argc, char **argv);
-void BitMap(HDC hdc, LPCWSTR Path, int x, int y, int Width, int Height, DWORD Param);
+void BitMap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param);
+
+
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPTSTR    lpCmdLine,
@@ -121,7 +123,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_COMMAND	- обработка меню приложения
 //  WM_PAINT	-Закрасить главное окно
 //  WM_DESTROY	 - ввести сообщение о выходе и вернуться.
-void Bitmap(HDC hdc, LPCSTR Path, int x, int y, int Width, int Height, DWORD Param)
+void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param)
 {
     HBITMAP bmp = (HBITMAP) LoadImage(NULL,Path,IMAGE_BITMAP,0,0,LR_LOADFROMFILE);
     HDC memdc = CreateCompatibleDC(hdc);
@@ -194,6 +196,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		LineTo(hdc, cp.x + 20, cp.y + 20);
 				cp.x = cp.x + 5;
 		cp.y = cp.y + 5;
+		//BitMap(hdc, L"C:\Users\Алексей\Documents\GitHub\Win32Project1", 20,20,20,20, SRCCOPY);
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -212,7 +215,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if((HWND) wParam == hGame)
 			{
 				if (GetFocus() != hGame) SetFocus(hGame);
-				BitMap(hInst, _T(BITMAP_PATH), 20,20,20,20, SRCCOPY);
 			}
 		}
 	default:

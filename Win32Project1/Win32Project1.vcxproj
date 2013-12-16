@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\Butterfly.bmp" />
+    <Image Include="..\btm.bmp" />
     <Image Include="small.ico" />
     <Image Include="Win32Project1.ico" />
   </ItemGroup>

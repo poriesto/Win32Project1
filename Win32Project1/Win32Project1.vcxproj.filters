@@ -105,5 +105,8 @@
     <Image Include="..\..\..\..\Desktop\Butterfly.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="..\btm.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>
