@@ -1,0 +1,17 @@
+ Том в устройстве C не имеет метки.
+ Серийный номер тома: 6265-0329
+
+ Содержимое папки C:\Users\Александр\Documents\GitHub\Win32Project1\Music
+
+18.12.2013  02:25        24 827 820 hc152_01_was_that_away_message_for_me_by_8bit_betty.wav
+18.12.2013  02:25        61 710 414 hc152_02_and_i_know_that_youre_happy_ballad_of_the_lonesome_spaceboy_by_8bit_betty.wav
+18.12.2013  02:25        37 071 956 hc152_03_nikomas_theme_extended_mix_by_8bit_betty.wav
+18.12.2013  02:25        36 012 034 hc152_04_spooky_loop_by_8bit_betty.wav
+18.12.2013  02:25        23 939 882 hc152_05_reading_rainbow_by_8bit_betty.wav
+18.12.2013  02:25        24 270 854 hc152_06_green_kangaroo_by_8bit_betty.wav
+18.12.2013  02:25        50 823 976 hc152_07_blast_off_by_8bit_betty.wav
+
+ Содержимое папки C:\Users\Александр\Documents\GitHub\Win32Project1\Music
+
+               7 файлов    258 656 936 байт
+               0 папок  16 157 868 032 байт свободно

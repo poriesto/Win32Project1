@@ -1,8 +1,7 @@
-../IS_01_Oliver.wav
-../IS_02_Vlad.wav
-../IS_03_Oliver.wav
-../IS_04_Pilot.wav
-../IS_05_Oliver.wav
-../IS_06_Pilot.wav
-../static_impact_00.wav
-../static_wave_01.wav
+../Music/hc152_01_was_that_away_message_for_me_by_8bit_betty.wav
+../Music/hc152_02_and_i_know_that_youre_happy_ballad_of_the_lonesome_spaceboy_by_8bit_betty.wav
+../Music/hc152_03_nikomas_theme_extended_mix_by_8bit_betty.wav
+../Music/hc152_04_spooky_loop_by_8bit_betty.wav
+../Music/hc152_05_reading_rainbow_by_8bit_betty.wav
+../Music/hc152_06_green_kangaroo_by_8bit_betty.wav
+../Music/hc152_07_blast_off_by_8bit_betty.wav
