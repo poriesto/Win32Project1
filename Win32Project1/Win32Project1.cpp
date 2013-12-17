@@ -19,7 +19,8 @@
 HINSTANCE hInst;								// текущий экземпл€р
 TCHAR szTitle[MAX_LOADSTRING];					// “екст строки заголовка
 TCHAR szWindowClass[MAX_LOADSTRING];			// им€ класса главного окна
-HBRUSH g_brush[2];
+HBRUSH g_brush;
+BOOL focus;
 int argc = 2; 
 char *argv[] = {"GLUT_RGB", "-f"};
 // ќтправить объ€влени€ функций, включенных в этот модуль кода:
@@ -30,7 +31,6 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Options(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Records(HWND, UINT, WPARAM, LPARAM);
 void Game(int argc, char **argv);
-void Audio(void);
 DWORD WINAPI ThreadProcSound(LPVOID lpParameter);
 void BitMap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param);
 
@@ -46,8 +46,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	MSG msg;
 	HACCEL hAccelTable;
 	
-	g_brush[0] = (HBRUSH)GetStockObject( WHITE_BRUSH );
-    g_brush[1] = (HBRUSH)GetStockObject( BLACK_BRUSH );
+    g_brush = (HBRUSH)GetStockObject( NULL_BRUSH );
 	
 	// »нициализаци€ глобальных строк
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -142,18 +141,12 @@ void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Pa
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	PAINTSTRUCT ps1;
-	HDC hdc;
-	HDC hdc1;
-	RECT rec1;
-	RECT rectGame;
+	PAINTSTRUCT ps, ps1;
+	HDC hdc, hdc1;
+	RECT rec1, rectGame;
+
 	GetClientRect(hWnd, &rec1);
-	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
-	int index = 0;
-	static HWND hGame;
-	static HWND hOptions;
-	static HWND hExit;
+	static HWND hGame, hOptions, hExit;
 	switch (message)
 	{
 	case WM_CREATE:
@@ -167,7 +160,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hGame = GetDlgItem(hWnd, ID_BT1);
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
-		 hdc = BeginPaint(hWnd, &ps);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
@@ -201,13 +193,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
-		hdc1 = BeginPaint(hGame, &ps1);
-		GetClientRect(hGame, &rectGame);
-	
-		// TODO: добавьте любой код отрисовки...
-		FillRect(ps1.hdc, &ps1.rcPaint, g_brush[index]);
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
-		EndPaint(hGame, &ps1);
+		if(focus == TRUE){
+			hdc1 = BeginPaint(hGame, &ps1);
+			GetClientRect(hGame, &rectGame);
+			// TODO: добавьте любой код отрисовки...
+			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
+			EndPaint(hGame, &ps1);
+		}
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -225,10 +218,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if (GetFocus() != hGame) {
 					SetFocus(hGame);
-					
 					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					index = 0;
-					g_brush[0] = (HBRUSH)GetStockObject( BLACK_BRUSH );
+					focus = TRUE;
+					g_brush = (HBRUSH)GetStockObject( BLACK_BRUSH );
 					InvalidateRect(hGame, &rectGame, TRUE);
 					UpdateWindow(hGame);
 				}
@@ -236,7 +228,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				g_brush[0] = (HBRUSH)GetStockObject( WHITE_BRUSH );
+				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
 				SetFocus(hWnd);
 			}
 		}
@@ -431,6 +423,5 @@ DWORD WINAPI ThreadProcSound(LPVOID lpParameter)
 		PlaySound(NULL, 0, 0);
 		iter++;
 	}
-	//PlaySound("E:\\1.wav", NULL, SND_ALIAS);
 	return 0;
 }
