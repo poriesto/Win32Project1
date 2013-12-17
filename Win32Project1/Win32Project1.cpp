@@ -19,6 +19,7 @@
 HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
 TCHAR szWindowClass[MAX_LOADSTRING];			// имя класса главного окна
+HBRUSH g_brush[2];
 int argc = 2; 
 char *argv[] = {"GLUT_RGB", "-f"};
 // Отправить объявления функций, включенных в этот модуль кода:
@@ -44,7 +45,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
  	// TODO: разместите код здесь.
 	MSG msg;
 	HACCEL hAccelTable;
-
+	
+	g_brush[0] = (HBRUSH)GetStockObject( WHITE_BRUSH );
+    g_brush[1] = (HBRUSH)GetStockObject( BLACK_BRUSH );
+	
 	// Инициализация глобальных строк
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_WIN32PROJECT1, szWindowClass, MAX_LOADSTRING);
@@ -139,21 +143,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
+	PAINTSTRUCT ps1;
 	HDC hdc;
-	HBRUSH whiteBrush = CreateSolidBrush(RGB(255,255,255));
+	HDC hdc1;
 	RECT rec1;
+	RECT rectGame;
 	GetClientRect(hWnd, &rec1);
 	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
-	POINT cp;
-	HANDLE snd;
-	cp.x = 0; cp.y = 0;
+	int index = 0;
 	static HWND hGame;
 	static HWND hOptions;
 	static HWND hExit;
 	switch (message)
 	{
 	case WM_CREATE:
-
 		SetTimer(hWnd, 1, 100, NULL);
 		CreateWindow("button","Start Game",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
 			rec1.right/2-40,rec1.bottom/2,100,30,hWnd,(HMENU)ID_BT1,NULL,NULL);
@@ -198,9 +201,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
+		hdc1 = BeginPaint(hGame, &ps1);
+		GetClientRect(hGame, &rectGame);
+	
 		// TODO: добавьте любой код отрисовки...
+		FillRect(ps1.hdc, &ps1.rcPaint, g_brush[index]);
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
-		//BitMap(hdc, L"C:\Users\Алексей\Documents\GitHub\Win32Project1", 20,20,20,20, SRCCOPY);
+		EndPaint(hGame, &ps1);
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -216,12 +223,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if((HWND) wParam == hGame)
 			{
-				if (GetFocus() != hGame) {SetFocus(hGame);
-				
+				if (GetFocus() != hGame) {
+					SetFocus(hGame);
+					
 					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					//Invalidate(0);
-					UpdateWindow(hWnd);
+					index = 0;
+					g_brush[0] = (HBRUSH)GetStockObject( BLACK_BRUSH );
+					InvalidateRect(hGame, &rectGame, TRUE);
+					UpdateWindow(hGame);
 				}
+				
+			}
+			else
+			{
+				g_brush[0] = (HBRUSH)GetStockObject( WHITE_BRUSH );
+				SetFocus(hWnd);
 			}
 		}
 	default:
