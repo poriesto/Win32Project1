@@ -2,6 +2,7 @@
 //
 #include "stdafx.h"
 #include "Win32Project1.h"
+
 #define FILE_NAME "../stat.txt"
 #define CONFIG "../config.txt"
 #define GRAPHICS_MODE "../graphics.txt"
@@ -12,6 +13,7 @@
 #define ID_BT2 200
 #define ID_BT3 300
 #define ID_LIST 120
+
 // Глобальные переменные:
 HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
@@ -26,6 +28,8 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Options(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Records(HWND, UINT, WPARAM, LPARAM);
 void Game(int argc, char **argv);
+void Audio(void);
+DWORD WINAPI ThreadProcSound(LPVOID lpParameter);
 void BitMap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param);
 
 
@@ -140,6 +144,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	GetClientRect(hWnd, &rec1);
 	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
 	POINT cp;
+	HANDLE snd;
 	cp.x = 0; cp.y = 0;
 	static HWND hGame;
 	static HWND hOptions;
@@ -147,24 +152,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
+
 		SetTimer(hWnd, 1, 100, NULL);
 		CreateWindow("button","Start Game",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2,100,20,hWnd,(HMENU)ID_BT1,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2,100,30,hWnd,(HMENU)ID_BT1,NULL,NULL);
 		CreateWindow("button","Options",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+20,100,20,hWnd,(HMENU)ID_BT2,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2+30,100,30,hWnd,(HMENU)ID_BT2,NULL,NULL);
 		CreateWindow("button","Exit",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+40,100,20,hWnd,(HMENU)ID_BT3,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2+60,100,30,hWnd,(HMENU)ID_BT3,NULL,NULL);
 		hGame = GetDlgItem(hWnd, ID_BT1);
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
 		 hdc = BeginPaint(hWnd, &ps);
+		 		//PlaySound ("E:\\1.wav", NULL, SND_FILENAME);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		int Exit;
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT1)) 
-				Game(argc, argv);
+			Game(argc, argv); 
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT2)) 
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT3)) 
@@ -192,10 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
 		// TODO: добавьте любой код отрисовки...
-		MoveToEx(hdc, cp.x, cp.y, NULL);
-		LineTo(hdc, cp.x + 20, cp.y + 20);
-				cp.x = cp.x + 5;
-		cp.y = cp.y + 5;
+		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
 		//BitMap(hdc, L"C:\Users\Алексей\Documents\GitHub\Win32Project1", 20,20,20,20, SRCCOPY);
 		EndPaint(hWnd, &ps);
 		break;
@@ -205,8 +209,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		//Написать модуль анимации для лаунчера
 		GetClientRect(hWnd, &rec1);
-		cp.x = cp.x + 5;
-		cp.y = cp.y + 5;
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
 	break;
@@ -214,7 +216,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if((HWND) wParam == hGame)
 			{
-				if (GetFocus() != hGame) SetFocus(hGame);
+				if (GetFocus() != hGame) {SetFocus(hGame);
+				
+					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
+					Invalidate(0);
+					UpdateWindow(hWnd);
+				}
 			}
 		}
 	default:
@@ -396,4 +403,10 @@ void Game(int argc, char **argv)
 	game->ctls[0] = (snakectl*) gfx;
 	game->init();
 	gfx->init(argc, argv);
+}
+
+DWORD WINAPI ThreadProcSound(LPVOID lpParameter)
+{
+	PlaySound("E:\\1.wav", NULL, SND_ALIAS);
+	return 0;
 }

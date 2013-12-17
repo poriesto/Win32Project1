@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "winmm.lib")
 
 #include "resource.h"
 #include "stdafx.h"
@@ -12,3 +13,4 @@
 #include "StatModule.h"
 #include "OptionsModule.h"
 #include <windows.h>
+#include <mmsystem.h>
