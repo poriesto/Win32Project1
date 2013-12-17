@@ -7,6 +7,7 @@
 #define CONFIG "../config.txt"
 #define GRAPHICS_MODE "../graphics.txt"
 #define BITMAP_PATH "../btm.bmp"
+#define PLAYLIST "../pl1.txt"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
 #define ID_BT1 100    /* идентификатор для кнопочки внутри главного окна */
@@ -164,7 +165,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
 		 hdc = BeginPaint(hWnd, &ps);
-		 		//PlaySound ("E:\\1.wav", NULL, SND_FILENAME);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
@@ -219,7 +219,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (GetFocus() != hGame) {SetFocus(hGame);
 				
 					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					Invalidate(0);
+					//Invalidate(0);
 					UpdateWindow(hWnd);
 				}
 			}
@@ -407,6 +407,14 @@ void Game(int argc, char **argv)
 
 DWORD WINAPI ThreadProcSound(LPVOID lpParameter)
 {
-	PlaySound("E:\\1.wav", NULL, SND_ALIAS);
+	list<string>pl;
+	pl = ReadConfigFromFile(PLAYLIST);
+	list<string>::iterator iter = pl.begin();
+	while(iter != pl.end()){
+		PlaySound((LPCSTR)iter->c_str(), NULL, SND_FILENAME|SND_SYSTEM);
+		PlaySound(NULL, 0, 0);
+		iter++;
+	}
+	//PlaySound("E:\\1.wav", NULL, SND_ALIAS);
 	return 0;
 }
