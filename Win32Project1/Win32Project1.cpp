@@ -147,9 +147,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 	PAINTSTRUCT ps, ps1, ps2;
-	HDC hdc, hdc1, hdc2;
+	HDC hdc, hdc1, hdc2, hCompatibleDC;
 	RECT rec1, rectGame, rectOpt, rectExt;
-
+	HANDLE hBitmap, hOldBitmap;
+	BITMAP Bitmap;
 	GetClientRect(hWnd, &rec1);
 	static HWND hGame, hOptions, hExit;
 	switch (message)
@@ -157,11 +158,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		SetTimer(hWnd, 1, 100, NULL);
 		CreateWindow("button","Start Game",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2,100,30,hWnd,(HMENU)ID_BT1,NULL,NULL);
+			rec1.right/2-100,rec1.bottom/2 - 35,200,30,hWnd,(HMENU)ID_BT1,NULL,NULL);
 		CreateWindow("button","Options",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+35,100,30,hWnd,(HMENU)ID_BT2,NULL,NULL);
+			rec1.right/2-100,rec1.bottom/2+20,200,30,hWnd,(HMENU)ID_BT2,NULL,NULL);
 		CreateWindow("button","Exit",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+70,100,30,hWnd,(HMENU)ID_BT3,NULL,NULL);
+			rec1.right/2-100,rec1.bottom/2+70,200,30,hWnd,(HMENU)ID_BT3,NULL,NULL);
 		hGame = GetDlgItem(hWnd, ID_BT1);
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
@@ -221,6 +222,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			FillRect(hdc2, &ps2.rcPaint, g_brush);
 			EndPaint(hExit, &ps2);
 		}
+		hBitmap = LoadImage(NULL, "../btm.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+		if(!hBitmap)
+		{
+			MessageBox(NULL, "FILE NOT FOUND!", "ERROR", MB_OK);
+		}
+		GetObject(hBitmap, sizeof(BITMAP), &Bitmap);
+        /* создать совместимый с контекстом окна контекст в памяти */
+        hCompatibleDC = CreateCompatibleDC(hdc);
+        /* делаем загруженный битмап текущим в совместимом контексте */
+        hOldBitmap = SelectObject(hCompatibleDC, hBitmap);
+         /* определить размер рабочей области окна */
+        GetClientRect(hWnd, &rec1);
+		// копировать битмап с совместимого на основной контекст устройства с масштабированием 
+        StretchBlt(hdc, 0, 0, rec1.right, rec1.bottom, hCompatibleDC, 0, 0, Bitmap.bmWidth, 
+                    Bitmap.bmHeight, SRCCOPY);
+
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
