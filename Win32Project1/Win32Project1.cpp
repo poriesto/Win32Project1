@@ -20,9 +20,10 @@ HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
 TCHAR szWindowClass[MAX_LOADSTRING];			// имя класса главного окна
 HBRUSH g_brush;
+HANDLE SnD;
+DWORD SnDid;
 //HFONT g_hfFont;
 //COLORREF g_rgbText;
-BOOL focus;
 int argc = 2; 
 char *argv[] = {"GLUT_RGB", "-f", "GLUT_RGBA"};
 // Отправить объявления функций, включенных в этот модуль кода:
@@ -49,7 +50,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	HACCEL hAccelTable;
 	
     g_brush = (HBRUSH)GetStockObject( NULL_BRUSH );
-
+	SnD = CreateThread(NULL, 0,ThreadProcSound,NULL,0,&SnDid);
 	//g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
     //g_rgbText = (COLORREF)RGB(0, 0, 128);
 
@@ -65,7 +66,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WIN32PROJECT1));
-
 	// Цикл основного сообщения:
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -146,14 +146,13 @@ void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Pa
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
-	PAINTSTRUCT ps, ps1, ps2, psOpt;
+	PAINTSTRUCT ps, ps1, ps2, ps3;
 	RECT rec1, rectGame, rectOpt, rectExt;
 	static HWND hGame, hOptions, hExit;
-	HDC hdc, hdc1, hdc2, hCompatibleDC, hdcGame, hdcOpt, hdcExt;
+	HDC hdc, hCompatibleDC, hdcGame, hdcOpt, hdcExt;
 	HANDLE hBitmap, hOldBitmap;
 	BITMAP Bitmap;
 	GetClientRect(hWnd, &rec1);
-
 
 	switch (message)
 	{
@@ -177,7 +176,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		wmEvent = HIWORD(wParam);
 		int Exit;
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT1)) 
-			Game(argc, argv); 
+			Game(argc, argv);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT2)) 
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT3)) 
@@ -204,13 +203,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
-		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
-		if(focus){
-			hdcGame = BeginPaint(hGame, &ps1);
-			GetClientRect(hGame, &rectGame);
-			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
-			EndPaint(hGame, &ps1);
-		}
 		hBitmap = LoadImage(NULL, "../btm.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 		if(!hBitmap)
 		{
@@ -226,6 +218,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// копировать битмап с совместимого на основной контекст устройства с масштабированием 
         StretchBlt(hdc, 0, 0, rec1.right, rec1.bottom, hCompatibleDC, 0, 0, Bitmap.bmWidth, 
                     Bitmap.bmHeight, SRCCOPY);
+		if(GetFocus() == hGame){
+			hdcGame = BeginPaint(hGame, &ps1);
+			GetClientRect(hGame, &rectGame);
+			FillRect(hdcGame, &rectGame, g_brush);
+			EndPaint(hGame, &ps1);
+		}
+		if(GetFocus() == hOptions){
+			hdcOpt = BeginPaint(hOptions, &ps2);
+			GetClientRect(hOptions, &rectOpt);
+			FillRect(hdcOpt, &rectOpt, g_brush);
+			EndPaint(hOptions, &ps2);
+		}
+		if(GetFocus() == hExit){
+			hdcExt = BeginPaint(hExit, &ps3);
+			GetClientRect(hExit, &rectExt);
+			FillRect(hdcExt, &rectExt, g_brush);
+			EndPaint(hExit, &ps3);
+		}
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -234,19 +244,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SETCURSOR:
 		{
 			if((HWND) wParam == hGame){
-				if (GetFocus() != hGame) {
+				if (GetFocus() != hGame){
 					SetFocus(hGame);
-					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					focus = TRUE;
 					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
-					InvalidateRect(hGame, &rectGame, TRUE);
-					UpdateWindow(hGame);
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
 				}
 			}
 			else{
 				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
-				SetFocus(NULL);
-
+				SetFocus(hWnd);
+			}
+			if((HWND) wParam == hOptions){
+				if (GetFocus() != hOptions) {
+					SetFocus(hOptions);
+					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
+			}
+			if((HWND) wParam == hExit){
+				if (GetFocus() != hExit) {
+					SetFocus(hExit);
+					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+				}
 			}
 		}
 	default:
@@ -440,5 +463,5 @@ DWORD WINAPI ThreadProcSound(LPVOID lpParameter)
 		PlaySound(NULL, 0, 0);
 		iter++;
 	}
-	return 0;
+	return TRUE;
 }
