@@ -20,6 +20,8 @@ HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
 TCHAR szWindowClass[MAX_LOADSTRING];			// имя класса главного окна
 HBRUSH g_brush;
+//HFONT g_hfFont;
+//COLORREF g_rgbText;
 BOOL focus;
 int argc = 2; 
 char *argv[] = {"GLUT_RGB", "-f"};
@@ -47,7 +49,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	HACCEL hAccelTable;
 	
     g_brush = (HBRUSH)GetStockObject( NULL_BRUSH );
-	
+
+	//g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
+    //g_rgbText = (COLORREF)RGB(0, 0, 128);
+
 	// Инициализация глобальных строк
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_WIN32PROJECT1, szWindowClass, MAX_LOADSTRING);
@@ -199,6 +204,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			GetClientRect(hGame, &rectGame);
 			// TODO: добавьте любой код отрисовки...
 			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
+			
 			EndPaint(hGame, &ps1);
 		}
 		EndPaint(hWnd, &ps);
@@ -220,7 +226,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					SetFocus(hGame);
 					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
 					focus = TRUE;
-					g_brush = (HBRUSH)GetStockObject( BLACK_BRUSH );
+					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
+			  //	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
+              //    g_rgbText = (COLORREF)RGB(0, 0, 128);
+
 					InvalidateRect(hGame, &rectGame, TRUE);
 					UpdateWindow(hGame);
 				}
@@ -229,6 +238,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			else
 			{
 				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
+			//	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
+			//	g_rgbText = (COLORREF)RGB(0, 0, 128);
 				SetFocus(hWnd);
 			}
 		}
