@@ -228,49 +228,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SETCURSOR:
 		{
-			if((HWND) wParam == hGame)
-			{
-				SetFocus(hGame);/*
-				if (GetFocus() != hGame) {
-					SetFocus(hGame);
-					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
-			  //	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
-              //    g_rgbText = (COLORREF)RGB(0, 0, 128);
-				}*/
-				
-			}
-			if((HWND) wParam == hOptions)
-			{
-				SetFocus(hOptions);
-				/*if (GetFocus() != hOptions) {
-					SetFocus(hOptions);
-					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
-				}*/
-			}
-			if((HWND)wParam == hExit){
-				SetFocus(hExit);
-			}
+			if((HWND) wParam == hGame) SetFocus(hGame);
+			if((HWND) wParam == hOptions) SetFocus(hOptions);
+			if((HWND)wParam == hExit) SetFocus(hExit);
 		}
 	case WM_SETFOCUS:
 		{
 			if(GetFocus() == hGame){
-			//	MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
 				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hGame, NULL, FALSE );
+				InvalidateRect(hGame, &rectGame, TRUE);
 				UpdateWindow(hGame);
 			}
 			if(GetFocus() == hOptions){
-				//MessageBox(hWnd, "FOCUSED1", "dsfhskd",MB_OK);
 				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hOptions,NULL, FALSE );
+				InvalidateRect(hOptions,&rectOpt, TRUE);
 				UpdateWindow(hOptions);
 			}
 			if(GetFocus() == hExit){
-				//MessageBox(hWnd, "FOCUSED1", "dsfhskd",MB_OK);
 				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hExit,NULL, FALSE );
+				InvalidateRect(hExit, &rectExt, TRUE);
 				UpdateWindow(hExit);
 			}
 		}
