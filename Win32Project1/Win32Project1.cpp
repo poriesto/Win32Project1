@@ -146,12 +146,14 @@ void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Pa
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
-	PAINTSTRUCT ps, ps1;
-	HDC hdc, hdc1;
-	RECT rec1, rectGame;
+	PAINTSTRUCT ps, ps1, psOpt;
+	HDC hdc, hdcGame, hdcOpt, hdcExt;
+	RECT rec1, rectGame, rectOpt, rectExt;
+	static HWND hGame, hOptions, hExit;
 
 	GetClientRect(hWnd, &rec1);
-	static HWND hGame, hOptions, hExit;
+
+
 	switch (message)
 	{
 	case WM_CREATE:
@@ -165,6 +167,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hGame = GetDlgItem(hWnd, ID_BT1);
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
+		GetClientRect(hGame, &rectGame);
+		GetClientRect(hOptions, &rectOpt);
+		GetClientRect(hExit, &rectExt);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
@@ -199,13 +204,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
-		if(focus == TRUE){
-			hdc1 = BeginPaint(hGame, &ps1);
+		if(GetFocus() == hGame){
+			hdcGame = BeginPaint(hGame, &ps1);
 			GetClientRect(hGame, &rectGame);
 			// TODO: добавьте любой код отрисовки...
 			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
-			
 			EndPaint(hGame, &ps1);
+		}
+		else if(GetFocus() == hOptions){
+			hdcOpt = BeginPaint(hOptions, &psOpt);
+			GetClientRect(hOptions, &rectOpt);
+			FillRect(hdcOpt, &rectOpt, g_brush);
+			EndPaint(hOptions, ps.rcPaint)
 		}
 		EndPaint(hWnd, &ps);
 		break;
@@ -214,9 +224,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_TIMER:
 		//Написать модуль анимации для лаунчера
-		GetClientRect(hWnd, &rec1);
+		/*GetClientRect(hWnd, &rec1);
 		InvalidateRect(hWnd, NULL, FALSE);
-		UpdateWindow(hWnd);
+		UpdateWindow(hWnd);*/
 	break;
 	case WM_SETCURSOR:
 		{
@@ -232,6 +242,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					InvalidateRect(hGame, &rectGame, TRUE);
 					UpdateWindow(hGame);
+				}
+				
+			}
+			else
+			{
+				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
+			//	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
+			//	g_rgbText = (COLORREF)RGB(0, 0, 128);
+				SetFocus(hWnd);
+			}
+
+			if((HWND) wParam == hOptions)
+			{
+				if (GetFocus() != hOptions) {
+					SetFocus(hOptions);
+					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
+					focus = TRUE;
+					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
+			  //	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
+              //    g_rgbText = (COLORREF)RGB(0, 0, 128);
+
+					InvalidateRect(hOptions, &rectOpt, TRUE);
+					UpdateWindow(hOptions);
 				}
 				
 			}
