@@ -146,9 +146,9 @@ void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Pa
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
-	PAINTSTRUCT ps, ps1;
-	HDC hdc, hdc1;
-	RECT rec1, rectGame;
+	PAINTSTRUCT ps, ps1, ps2;
+	HDC hdc, hdc1, hdc2;
+	RECT rec1, rectGame, rectOpt, rectExt;
 
 	GetClientRect(hWnd, &rec1);
 	static HWND hGame, hOptions, hExit;
@@ -159,12 +159,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateWindow("button","Start Game",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
 			rec1.right/2-40,rec1.bottom/2,100,30,hWnd,(HMENU)ID_BT1,NULL,NULL);
 		CreateWindow("button","Options",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+30,100,30,hWnd,(HMENU)ID_BT2,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2+35,100,30,hWnd,(HMENU)ID_BT2,NULL,NULL);
 		CreateWindow("button","Exit",WS_CHILD|BS_PUSHBUTTON|WS_VISIBLE,
-			rec1.right/2-40,rec1.bottom/2+60,100,30,hWnd,(HMENU)ID_BT3,NULL,NULL);
+			rec1.right/2-40,rec1.bottom/2+70,100,30,hWnd,(HMENU)ID_BT3,NULL,NULL);
 		hGame = GetDlgItem(hWnd, ID_BT1);
 		hOptions = GetDlgItem(hWnd, ID_BT2);
 		hExit = GetDlgItem(hWnd, ID_BT3);
+		GetClientRect(hGame, &rectGame);
+		GetClientRect(hOptions, &rectOpt);
+		GetClientRect(hExit, &rectExt);
 		return 0;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
@@ -199,48 +202,76 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
-		if(focus == TRUE){
+		if(GetFocus() == hGame){
 			hdc1 = BeginPaint(hGame, &ps1);
 			GetClientRect(hGame, &rectGame);
 			// TODO: добавьте любой код отрисовки...
 			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
-			
 			EndPaint(hGame, &ps1);
+		}
+		if(GetFocus() == hOptions){
+			hdc2 = BeginPaint(hOptions, &ps2);
+			GetClientRect(hOptions, &rectOpt);
+			FillRect(hdc2, &ps2.rcPaint, g_brush);
+			EndPaint(hOptions, &ps2);
 		}
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-	case WM_TIMER:
-		//Написать модуль анимации для лаунчера
-		GetClientRect(hWnd, &rec1);
-		InvalidateRect(hWnd, NULL, FALSE);
-		UpdateWindow(hWnd);
-	break;
 	case WM_SETCURSOR:
 		{
 			if((HWND) wParam == hGame)
 			{
+				SetFocus(hGame);/*
 				if (GetFocus() != hGame) {
 					SetFocus(hGame);
 					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
-					focus = TRUE;
 					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
 			  //	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
               //    g_rgbText = (COLORREF)RGB(0, 0, 128);
-
-					InvalidateRect(hGame, &rectGame, TRUE);
-					UpdateWindow(hGame);
-				}
+				}*/
 				
 			}
-			else
+			if((HWND) wParam == hOptions)
 			{
-				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
-			//	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
-			//	g_rgbText = (COLORREF)RGB(0, 0, 128);
-				SetFocus(hWnd);
+				SetFocus(hOptions);
+				/*if (GetFocus() != hOptions) {
+					SetFocus(hOptions);
+					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
+					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
+				}*/
+			}
+			if((HWND)wParam == hExit){
+				SetFocus(hExit);
+			}
+		}
+	case WM_SETFOCUS:
+		{
+			if(GetFocus() == hGame){
+			//	MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
+				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+				InvalidateRect(hGame, NULL, FALSE );
+				UpdateWindow(hGame);
+			}
+			if(GetFocus() == hOptions){
+				//MessageBox(hWnd, "FOCUSED1", "dsfhskd",MB_OK);
+				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+				InvalidateRect(hOptions,NULL, FALSE );
+				UpdateWindow(hOptions);
+			}
+			if(GetFocus() == hExit){
+				//MessageBox(hWnd, "FOCUSED1", "dsfhskd",MB_OK);
+				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+				InvalidateRect(hExit,NULL, FALSE );
+				UpdateWindow(hExit);
+			}
+		}
+	case WM_KILLFOCUS:
+		{
+			if(GetFocus() == hGame || GetFocus() == hOptions || GetFocus() == hExit){
+				SetFocus(NULL);
 			}
 		}
 	default:
