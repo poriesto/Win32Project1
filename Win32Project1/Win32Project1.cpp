@@ -50,7 +50,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	HACCEL hAccelTable;
 	
     g_brush = (HBRUSH)GetStockObject( NULL_BRUSH );
-	SnD = CreateThread(NULL, 0,ThreadProcSound,NULL,0,&SnDid);
+
 	//g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
     //g_rgbText = (COLORREF)RGB(0, 0, 128);
 
@@ -221,27 +221,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if(GetFocus() == hGame){
 			hdcGame = BeginPaint(hGame, &ps1);
 			GetClientRect(hGame, &rectGame);
-			TextOut(hdcGame, rectGame.left/2 + 70, rectGame.bottom/2, "Start Game", 10);
-			//FillRect(hdcGame, &rectGame, g_brush);
+			TextOut(hdcGame, rectGame.left/2 + 70, 
+				rectGame.bottom/2, "Start Game", 10);
 			SetBkColor(hdcGame, LTGRAY_BRUSH);
 			EndPaint(hGame, &ps1);
 		}
 		if(GetFocus() == hOptions){
 			hdcOpt = BeginPaint(hOptions, &ps2);
 			GetClientRect(hOptions, &rectOpt);
-			TextOut(hdcOpt, rectOpt.left/2 + 70+10, rectOpt.bottom/2, "Options", 7);
-			//FillRect(hdcGame, &rectGame, g_brush);
+			TextOut(hdcOpt, rectOpt.left/2 + 80,
+				rectOpt.bottom/2, "Options", 7);
 			SetBkColor(hdcOpt, LTGRAY_BRUSH);
 			EndPaint(hOptions, &ps2);
 		}
 		if(GetFocus() == hExit){
 			hdcExt = BeginPaint(hExit, &ps3);
 			GetClientRect(hExit, &rectExt);
-			TextOut(hdcExt, rectExt.left/2 + 70+20, rectExt.bottom/2, "Exit", 4);
-			//FillRect(hdcGame, &rectGame, g_brush);
+			TextOut(hdcExt, rectExt.left/2 + 90,
+				rectExt.bottom/2, "Exit", 4);
 			SetBkColor(hdcExt, LTGRAY_BRUSH);
 			EndPaint(hExit, &ps3);
 		}
+		SnD = CreateThread(NULL, 0,ThreadProcSound,NULL,0,&SnDid);
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -465,7 +466,7 @@ DWORD WINAPI ThreadProcSound(LPVOID lpParameter)
 	pl = ReadConfigFromFile(PLAYLIST);
 	list<string>::iterator iter = pl.begin();
 	while(iter != pl.end()){
-		PlaySound((LPCSTR)iter->c_str(), NULL, SND_FILENAME|SND_SYSTEM);
+		PlaySound((LPCSTR)iter->c_str(), NULL, SND_FILENAME);
 		PlaySound(NULL, 0, 0);
 		iter++;
 	}
