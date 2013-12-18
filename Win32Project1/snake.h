@@ -28,6 +28,7 @@
 #define CELL_POISON 4
 #define CELL_EXTRA 5
 #define CELL_LIFE 6
+#define CELL_FOOD_2 7
 
 #define NIBBLE_EAT 6
 #define NIBBLE_POISON 3
