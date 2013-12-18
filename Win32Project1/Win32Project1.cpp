@@ -215,6 +215,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			FillRect(hdc2, &ps2.rcPaint, g_brush);
 			EndPaint(hOptions, &ps2);
 		}
+		if(GetFocus() == hExit){
+			hdc2 = BeginPaint(hExit, &ps2);
+			GetClientRect(hExit, &rectOpt);
+			FillRect(hdc2, &ps2.rcPaint, g_brush);
+			EndPaint(hExit, &ps2);
+		}
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
