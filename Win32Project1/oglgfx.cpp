@@ -9,6 +9,7 @@ using std::string;
 GLfloat angle;
 GLfloat radius = 5.0; //radius of vision: > 6.0 - screen in not vision, < vision from inside cube, lol
 GLdouble fct = 0;
+//GLuint	texture[1];
 
 bool needupdate;
 snakeplane* sp;
@@ -25,8 +26,36 @@ GLvoid tPutCube (GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLf
 GLvoid uctPutCube (GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
 GLvoid polarView (GLdouble radius);
 GLvoid drawSceneU(GLvoid);
+/*
+GLvoid LoadGLTextures()
+{
+	// «агрузка картинки
+	AUX_RGBImageRec *texture1;
+	texture1 = auxDIBImageLoad("../back.bmp");
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+}
 
-const GLubyte texture[]=
+GLvoid InitGL(GLsizei Width, GLsizei Height)
+{
+LoadGLTextures();			// «агрузка текстур
+glEnable(GL_TEXTURE_2D);		// –азрешение наложение текстуры
+glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+glClearDepth(1.0);
+glDepthFunc(GL_LESS);
+glEnable(GL_DEPTH_TEST);
+glShadeModel(GL_SMOOTH);
+
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+
+gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f);
+
+glMatrixMode(GL_MODELVIEW);
+}
+*/
+const GLubyte texture[]= 
  {
   0x80,0x80,0x00,0x80,0x80,0x00,0x80,0x80,0x00,0x80,0x80,0x00,0x80,
   0x80,0x00,0x80,0x80,0x00,0x80,0x80,0x00,0x80,0x80,0x00,0x80,0x80,
@@ -266,7 +295,7 @@ const GLubyte texture[]=
   0x80,0x00,0x80,0x80,0x00,0x80,0x80,0x00,0x80,0x80,0x00,0x80,0x80,
   0x00,0x80,0x80,0x00,0x00
   };
-
+  
 GLubyte fulltex[] = {
 	0xff, 0xff, 0xff
 };
@@ -319,8 +348,8 @@ void oglgfx :: init (int argc, char **argv)
 		glutEnterGameMode();
 	} else {
 		/*cout << "system: entering windowed mode." << endl;*/
-		glutInitWindowSize(320, 320);
-		glutCreateWindow("Snake 3D");
+		glutInitWindowSize(1280, 720);
+		glutCreateWindow("SuperSnake 3D");
 		//glutFullScreen();
 
 	}
@@ -337,13 +366,20 @@ void oglgfx :: init (int argc, char **argv)
 
 	glEnable(GL_DEPTH_TEST); 
  
-    glMatrixMode( GL_PROJECTION ); 
-    gluPerspective( 45.0, 1, 2.0, 7.0 ); 
-    glMatrixMode( GL_MODELVIEW ); 
- 
+
+	//устанавливаю перспективу
+    glMatrixMode(GL_PROJECTION);  
+	gluPerspective(45.0, 1.5, 2.0, 10.0); /* перспектива: первый параметр - опередел€ет видимость сцены: изображение больше или меньше,
+	                                         типа объектива фотоаппарата, описываетс€ в градусах 0 - 180, 
+	                                         второй - по сути ширина видимой сцены, а так это угол поворота по оси Y*/
+
+	//устанавливаю угол взгл€да
+    glMatrixMode(GL_MODELVIEW); 
+
+
 	cout << "system: setting up lighting and colors." << endl;
 
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
 	glEnable(GL_COLOR_MATERIAL);
 
@@ -360,7 +396,7 @@ void oglgfx :: init (int argc, char **argv)
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
     
-	radius = 3.0 + 3.0/2.0; 
+	radius = 5.0; 
 
     angle = 0.0f;
 
