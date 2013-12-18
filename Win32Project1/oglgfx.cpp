@@ -578,7 +578,7 @@ GLvoid __cdecl drawScene(GLvoid)
 
     glPushMatrix();
 
-    polarView( radius); 
+    polarView(radius); 
 
 	glColor3dv(green);
 	//glBindTexture(GL_TEXTURE_2D, 1);
