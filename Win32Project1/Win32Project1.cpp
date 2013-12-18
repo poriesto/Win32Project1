@@ -221,19 +221,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if(GetFocus() == hGame){
 			hdcGame = BeginPaint(hGame, &ps1);
 			GetClientRect(hGame, &rectGame);
-			FillRect(hdcGame, &rectGame, g_brush);
+			TextOut(hdcGame, rectGame.left/2 + 70, rectGame.bottom/2, "Start Game", 10);
+			//FillRect(hdcGame, &rectGame, g_brush);
+			SetBkColor(hdcGame, LTGRAY_BRUSH);
 			EndPaint(hGame, &ps1);
 		}
 		if(GetFocus() == hOptions){
 			hdcOpt = BeginPaint(hOptions, &ps2);
 			GetClientRect(hOptions, &rectOpt);
-			FillRect(hdcOpt, &rectOpt, g_brush);
+			TextOut(hdcOpt, rectOpt.left/2 + 70+10, rectOpt.bottom/2, "Options", 7);
+			//FillRect(hdcGame, &rectGame, g_brush);
+			SetBkColor(hdcOpt, LTGRAY_BRUSH);
 			EndPaint(hOptions, &ps2);
 		}
 		if(GetFocus() == hExit){
 			hdcExt = BeginPaint(hExit, &ps3);
 			GetClientRect(hExit, &rectExt);
-			FillRect(hdcExt, &rectExt, g_brush);
+			TextOut(hdcExt, rectExt.left/2 + 70+20, rectExt.bottom/2, "Exit", 4);
+			//FillRect(hdcGame, &rectGame, g_brush);
+			SetBkColor(hdcExt, LTGRAY_BRUSH);
 			EndPaint(hExit, &ps3);
 		}
 		EndPaint(hWnd, &ps);
