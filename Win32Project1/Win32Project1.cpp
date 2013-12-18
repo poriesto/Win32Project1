@@ -146,25 +146,12 @@ void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Pa
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
-<<<<<<< HEAD
-<<<<<<< HEAD
-	PAINTSTRUCT ps, ps1, psOpt;
-	HDC hdc, hdcGame, hdcOpt, hdcExt;
+	PAINTSTRUCT ps, ps1, ps2, psOpt;
 	RECT rec1, rectGame, rectOpt, rectExt;
 	static HWND hGame, hOptions, hExit;
-
-=======
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
-	PAINTSTRUCT ps, ps1, ps2;
-	HDC hdc, hdc1, hdc2, hCompatibleDC;
-	RECT rec1, rectGame, rectOpt, rectExt;
+	HDC hdc, hdc1, hdc2, hCompatibleDC, hdcGame, hdcOpt, hdcExt;
 	HANDLE hBitmap, hOldBitmap;
 	BITMAP Bitmap;
-<<<<<<< HEAD
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 	GetClientRect(hWnd, &rec1);
 
 
@@ -219,41 +206,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect(hWnd, &rec1);
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
 		if(GetFocus() == hGame){
-<<<<<<< HEAD
-<<<<<<< HEAD
 			hdcGame = BeginPaint(hGame, &ps1);
-=======
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
-			hdc1 = BeginPaint(hGame, &ps1);
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 			GetClientRect(hGame, &rectGame);
-			// TODO: добавьте любой код отрисовки...
 			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
 			EndPaint(hGame, &ps1);
-		}
-<<<<<<< HEAD
-<<<<<<< HEAD
-		else if(GetFocus() == hOptions){
-			hdcOpt = BeginPaint(hOptions, &psOpt);
-			GetClientRect(hOptions, &rectOpt);
-			FillRect(hdcOpt, &rectOpt, g_brush);
-			EndPaint(hOptions, ps.rcPaint)
-		}
-=======
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
-		if(GetFocus() == hOptions){
-			hdc2 = BeginPaint(hOptions, &ps2);
-			GetClientRect(hOptions, &rectOpt);
-			FillRect(hdc2, &ps2.rcPaint, g_brush);
-			EndPaint(hOptions, &ps2);
-		}
-		if(GetFocus() == hExit){
-			hdc2 = BeginPaint(hExit, &ps2);
-			GetClientRect(hExit, &rectOpt);
-			FillRect(hdc2, &ps2.rcPaint, g_brush);
-			EndPaint(hExit, &ps2);
 		}
 		hBitmap = LoadImage(NULL, "../btm.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 		if(!hBitmap)
@@ -270,91 +226,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// копировать битмап с совместимого на основной контекст устройства с масштабированием 
         StretchBlt(hdc, 0, 0, rec1.right, rec1.bottom, hCompatibleDC, 0, 0, Bitmap.bmWidth, 
                     Bitmap.bmHeight, SRCCOPY);
-
-<<<<<<< HEAD
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-<<<<<<< HEAD
-<<<<<<< HEAD
-	case WM_TIMER:
-		//Написать модуль анимации для лаунчера
-		/*GetClientRect(hWnd, &rec1);
-		InvalidateRect(hWnd, NULL, FALSE);
-		UpdateWindow(hWnd);*/
-	break;
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 	case WM_SETCURSOR:
 		{
-			if((HWND) wParam == hGame) SetFocus(hGame);
-			if((HWND) wParam == hOptions) SetFocus(hOptions);
-			if((HWND)wParam == hExit) SetFocus(hExit);
-		}
-	case WM_SETFOCUS:
-		{
-			if(GetFocus() == hGame){
-				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hGame, &rectGame, TRUE);
-				UpdateWindow(hGame);
-<<<<<<< HEAD
-			}
-			if(GetFocus() == hOptions){
-				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hOptions,&rectOpt, TRUE);
-				UpdateWindow(hOptions);
-			}
-			if(GetFocus() == hExit){
-				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hExit, &rectExt, TRUE);
-				UpdateWindow(hExit);
-			}
-		}
-	case WM_KILLFOCUS:
-		{
-			if(GetFocus() == hGame || GetFocus() == hOptions || GetFocus() == hExit){
-				SetFocus(NULL);
-			}
-
-			if((HWND) wParam == hOptions)
-			{
-				if (GetFocus() != hOptions) {
-					SetFocus(hOptions);
+			if((HWND) wParam == hGame){
+				if (GetFocus() != hGame) {
+					SetFocus(hGame);
 					//MessageBox(hWnd, "FOCUSED", "dsfhskd",MB_OK);
 					focus = TRUE;
 					g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH); //The GetStockObject function retrieves a handle to one of the stock pens, brushes, fonts, or palettes.
-			  //	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
-              //    g_rgbText = (COLORREF)RGB(0, 0, 128);
-
-					InvalidateRect(hOptions, &rectOpt, TRUE);
-					UpdateWindow(hOptions);
+					InvalidateRect(hGame, &rectGame, TRUE);
+					UpdateWindow(hGame);
 				}
-				
-=======
->>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 			}
-			if(GetFocus() == hOptions){
-				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hOptions,&rectOpt, TRUE);
-				UpdateWindow(hOptions);
-			}
-			if(GetFocus() == hExit){
-				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-				InvalidateRect(hExit, &rectExt, TRUE);
-				UpdateWindow(hExit);
-			}
-		}
-	case WM_KILLFOCUS:
-		{
-			if(GetFocus() == hGame || GetFocus() == hOptions || GetFocus() == hExit){
+			else{
 				SetFocus(NULL);
+				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
 			}
 		}
 	default:
