@@ -205,7 +205,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rec1);
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
-		if(GetFocus() == hGame){
+		if(focus){
 			hdcGame = BeginPaint(hGame, &ps1);
 			GetClientRect(hGame, &rectGame);
 			FillRect(ps1.hdc, &ps1.rcPaint, g_brush);
