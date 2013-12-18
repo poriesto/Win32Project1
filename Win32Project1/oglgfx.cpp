@@ -325,7 +325,7 @@ void oglgfx :: init (int argc, char **argv)
 	int  fullscreen;
 	char modestring [50];
 	cout << "system: SuperSnake3D 2013" << endl;
-	cout << "system: ver.: 1.0" << endl;
+	cout << "system: ver.: 1.0a" << endl;
 	cout << "system: initializing GLUT" << endl;
 
 	glutInit(&argc,argv);
@@ -360,7 +360,7 @@ void oglgfx :: init (int argc, char **argv)
 	glutIdleFunc(snakeup);
 	glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc (processSpecialKeys);
-	speedsetting = 50;
+	speedsetting = 100;
 
 	cout << "system: setting up depth buffer." << endl;
 
