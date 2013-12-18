@@ -24,7 +24,7 @@ HBRUSH g_brush;
 //COLORREF g_rgbText;
 BOOL focus;
 int argc = 2; 
-char *argv[] = {"GLUT_RGB", "-f"};
+char *argv[] = {"GLUT_RGB", "-f", "GLUT_RGBA"};
 // Отправить объявления функций, включенных в этот модуль кода:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -179,7 +179,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT2)) 
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT3)) 
-			Exit = MessageBox(hWnd, "Do u want exit from this beateful game?", "Exit from game", MB_YESNO|MB_ICONQUESTION);
+			Exit = MessageBox(hWnd, "Do u want exit?", "Exit from game", MB_YESNO|MB_ICONQUESTION);
 			if(Exit == IDYES){
 				DestroyWindow(hWnd);
 			}

@@ -366,10 +366,17 @@ void oglgfx :: init (int argc, char **argv)
 
 	glEnable(GL_DEPTH_TEST); 
  
-    glMatrixMode( GL_PROJECTION );  
-	gluPerspective(45.0, 1.5, 2.0, 10.0); //перспектива: первый параметр - дальность "взгляда" на сцену, второй - ширина сцены
-    glMatrixMode( GL_MODELVIEW ); 
- 
+
+	//устанавливаю перспективу
+    glMatrixMode(GL_PROJECTION);  
+	gluPerspective(45.0, 1.5, 2.0, 10.0); /* перспектива: первый параметр - опеределяет видимость сцены: изображение больше или меньше,
+	                                         типа объектива фотоаппарата, описывается в градусах 0 - 180, 
+	                                         второй - по сути ширина видимой сцены, а так это угол поворота по оси Y*/
+
+	//устанавливаю угол взгляда
+    glMatrixMode(GL_MODELVIEW); 
+
+
 	cout << "system: setting up lighting and colors." << endl;
 
 	glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
