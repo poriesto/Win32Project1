@@ -11,7 +11,7 @@
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
 #define ID_BT1 100    /* идентификатор для кнопочки внутри главного окна */
-#define ID_BT2 200
+#define ID_BT2 200	
 #define ID_BT3 300
 #define ID_LIST 120
 

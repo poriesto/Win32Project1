@@ -73,7 +73,7 @@ void snakegame :: update()
 				if ((scl2->x == scl->x) && (scl2->y == scl->y) && (scl2->side == scl->side))
 				{
 					sprintf(&buf[0], "Your score is %d.", maingame->players[0]->score);
-					MessageBox(NULL, &buf[0], "Snake3D/Win32", 0);
+					MessageBox(NULL, &buf[0], "SuperSnake3D", 0);
 					exit(0);
 					cout.flush();
 					stop = 1;
