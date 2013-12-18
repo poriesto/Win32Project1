@@ -244,8 +244,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 			else{
-				SetFocus(NULL);
 				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
+				SetFocus(NULL);
+
 			}
 		}
 	default:
