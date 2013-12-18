@@ -147,17 +147,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PAINTSTRUCT ps, ps1, psOpt;
 	HDC hdc, hdcGame, hdcOpt, hdcExt;
 	RECT rec1, rectGame, rectOpt, rectExt;
 	static HWND hGame, hOptions, hExit;
 
 =======
+=======
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 	PAINTSTRUCT ps, ps1, ps2;
 	HDC hdc, hdc1, hdc2, hCompatibleDC;
 	RECT rec1, rectGame, rectOpt, rectExt;
 	HANDLE hBitmap, hOldBitmap;
 	BITMAP Bitmap;
+<<<<<<< HEAD
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
+=======
 >>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 	GetClientRect(hWnd, &rec1);
 
@@ -214,8 +220,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateThread(NULL, 0,ThreadProcSound,NULL,0,NULL);
 		if(GetFocus() == hGame){
 <<<<<<< HEAD
+<<<<<<< HEAD
 			hdcGame = BeginPaint(hGame, &ps1);
 =======
+=======
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 			hdc1 = BeginPaint(hGame, &ps1);
 >>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 			GetClientRect(hGame, &rectGame);
@@ -224,6 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			EndPaint(hGame, &ps1);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		else if(GetFocus() == hOptions){
 			hdcOpt = BeginPaint(hOptions, &psOpt);
 			GetClientRect(hOptions, &rectOpt);
@@ -231,6 +241,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			EndPaint(hOptions, ps.rcPaint)
 		}
 =======
+=======
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 		if(GetFocus() == hOptions){
 			hdc2 = BeginPaint(hOptions, &ps2);
 			GetClientRect(hOptions, &rectOpt);
@@ -259,6 +271,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         StretchBlt(hdc, 0, 0, rec1.right, rec1.bottom, hCompatibleDC, 0, 0, Bitmap.bmWidth, 
                     Bitmap.bmHeight, SRCCOPY);
 
+<<<<<<< HEAD
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
+=======
 >>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 		EndPaint(hWnd, &ps);
 		break;
@@ -266,12 +281,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case WM_TIMER:
 		//Ќаписать модуль анимации дл€ лаунчера
 		/*GetClientRect(hWnd, &rec1);
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);*/
 	break;
+=======
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 =======
 >>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 	case WM_SETCURSOR:
@@ -286,6 +304,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
 				InvalidateRect(hGame, &rectGame, TRUE);
 				UpdateWindow(hGame);
+<<<<<<< HEAD
 			}
 			if(GetFocus() == hOptions){
 				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
@@ -318,13 +337,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					UpdateWindow(hOptions);
 				}
 				
+=======
+>>>>>>> 09af7192f60ef9ba8f3b57f8fb7e231dce550d81
 			}
-			else
-			{
-				g_brush = (HBRUSH)GetStockObject(NULL_BRUSH);
-			//	g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
-			//	g_rgbText = (COLORREF)RGB(0, 0, 128);
-				SetFocus(hWnd);
+			if(GetFocus() == hOptions){
+				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+				InvalidateRect(hOptions,&rectOpt, TRUE);
+				UpdateWindow(hOptions);
+			}
+			if(GetFocus() == hExit){
+				g_brush = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+				InvalidateRect(hExit, &rectExt, TRUE);
+				UpdateWindow(hExit);
+			}
+		}
+	case WM_KILLFOCUS:
+		{
+			if(GetFocus() == hGame || GetFocus() == hOptions || GetFocus() == hExit){
+				SetFocus(NULL);
 			}
 		}
 	default:
