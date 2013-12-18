@@ -435,12 +435,12 @@ void processNormalKeys(unsigned char key, int x, int y)
 		MessageBox(NULL, &buf[0], "Snake3D/Win32", 0);
 		break;
 	case '0':
-		speedsetting = speedsetting - 1;
-		speedsetting = speedsetting < 0 ? 0 : speedsetting;
-		break;
-	case '9':
 		speedsetting = speedsetting + 1;
 		speedsetting = speedsetting > 100 ? 100 : speedsetting;
+		break;
+	case '9':
+		speedsetting = speedsetting - 1;
+		speedsetting = speedsetting < 0 ? 0 : speedsetting;
 		break;
 	default:
 		maingfx->keypress = 0;
@@ -578,7 +578,7 @@ GLvoid __cdecl drawScene(GLvoid)
 
     glPushMatrix();
 
-    polarView( radius); 
+    polarView(radius); 
 
 	glColor3dv(green);
 	//glBindTexture(GL_TEXTURE_2D, 1);
@@ -642,16 +642,20 @@ GLvoid __cdecl drawSceneU(GLvoid)
 					switch (cell)
 					{
 					case CELL_BLOCK:
-						glColor3dv(green);
-						break;
-					case CELL_SNAKE:
-						glColor3d(255,0,0);
-						break;
-					case CELL_FOOD:
 						glColor3dv(blue);
+						break;
+					case CELL_SNAKE:              //color of snake
+						glColor3d(40,255,0);
+						break;
+					case CELL_FOOD:               //color of food (mini cubes/blocks)
+						glColor3dv(red);
+						break;
+				    case CELL_FOOD_2:               
+						glColor3dv(green);
 						break;
 					default:
 						cout << "uhh... watsa " << cell << "? a food is " << CELL_FOOD << "..." << endl;
+						cout << "uhh... watsa " << cell << "? a food is " << CELL_FOOD_2 << "..." << endl;
 						cerr << "err> illegal cell" << endl;
 						cerr.flush();
 						glColor3d(0,0,0);
@@ -925,7 +929,7 @@ void polarView(GLdouble radius)
 
 	glRasterPos3f(-1.55f, LINEX(0), 1.0f);
 	text("SuperSnake3D");
-	sprintf(&buf[0], "Speed: %d. Use 0 and 9 to change. Higher is slower.", speedsetting);
+	sprintf(&buf[0], "Speed: %d. Use 0 and 9 to change.", ((speedsetting-100)*(-1)));
 	glRasterPos3f(-1.55f, LINEX(1), 1.0f);
 	text(&buf[0]);
 
@@ -986,7 +990,7 @@ void polarView(GLdouble radius)
 	angle++;*/
 }
 
-void PutMiniCube(int x, int y, int p)
+void PutMiniCube(int x, int y, int p)  //вставка кубов (еды)
 {
 	switch (p)
 	{
