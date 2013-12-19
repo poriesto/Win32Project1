@@ -21,6 +21,7 @@ snakegame *maingame;
 oglgfx *maingfx;
 void processNormalKeys(unsigned char key, int x, int y);
 void processSpecialKeys(int key, int x, int y);
+void gamepad(unsigned int buttonMask, int x, int y, int z);
 GLvoid PutCube (GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
 GLvoid tPutCube (GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
 GLvoid uctPutCube (GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
@@ -360,6 +361,8 @@ void oglgfx :: init (int argc, char **argv)
 	glutIdleFunc(snakeup);
 	glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc (processSpecialKeys);
+	glutJoystickFunc(gamepad, 300);
+	glutForceJoystickFunc();
 	speedsetting = 100;
 
 	cout << "system: setting up depth buffer." << endl;
@@ -475,7 +478,21 @@ void processSpecialKeys(int key, int x, int y)
 		MessageBeep(MB_OK);
 	};
 }
-
+void gamepad(unsigned int buttonMask, int x, int y, int z){
+			char buf[100];
+	if(buttonMask & GLUT_JOYSTICK_BUTTON_A) {
+		sprintf(&buf[0], "button A is pressed");
+	}
+	if(buttonMask & GLUT_JOYSTICK_BUTTON_B) {
+		sprintf(&buf[0], "button B is pressed");
+	}
+	if(buttonMask & GLUT_JOYSTICK_BUTTON_C) {
+		sprintf(&buf[0], "button C is pressed ");
+	}
+	if(buttonMask & GLUT_JOYSTICK_BUTTON_D) {
+		sprintf(&buf[0], "button D is pressed ");
+	}
+}
 oglgfx :: oglgfx ()
 {
 	//MessageBox(NULL,"oglgfx class created","oglgfx",0);
