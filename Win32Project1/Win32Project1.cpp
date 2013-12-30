@@ -2,12 +2,6 @@
 //
 #include "stdafx.h"
 #include "Win32Project1.h"
-
-#define FILE_NAME "../stat.txt"
-#define CONFIG "../config.txt"
-#define GRAPHICS_MODE "../graphics.txt"
-#define BITMAP_PATH "../btm.bmp"
-#define PLAYLIST "../pl1.txt"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
 #define ID_BT1 100    /* идентификатор для кнопочки внутри главного окна */
@@ -20,10 +14,6 @@ HINSTANCE hInst;								// текущий экземпляр
 TCHAR szTitle[MAX_LOADSTRING];					// Текст строки заголовка
 TCHAR szWindowClass[MAX_LOADSTRING];			// имя класса главного окна
 HBRUSH g_brush;
-HANDLE SnD;
-DWORD SnDid;
-//HFONT g_hfFont;
-//COLORREF g_rgbText;
 int argc = 2; 
 char *argv[] = {"GLUT_RGB", "-f", "GLUT_RGBA"};
 // Отправить объявления функций, включенных в этот модуль кода:
@@ -33,10 +23,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Options(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Records(HWND, UINT, WPARAM, LPARAM);
-void Game(int argc, char **argv);
-DWORD WINAPI ThreadProcSound(LPVOID lpParameter);
 void BitMap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param);
-
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -48,9 +35,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
  	// TODO: разместите код здесь.
 	MSG msg;
 	HACCEL hAccelTable;
-	
-    g_brush = (HBRUSH)GetStockObject( NULL_BRUSH );
 
+    g_brush = (HBRUSH)GetStockObject( NULL_BRUSH );
+	thr.detach();
 	//g_hfFont = (HFONT)GetStockObject(SYSTEM_FONT);
     //g_rgbText = (COLORREF)RGB(0, 0, 128);
 
@@ -153,7 +140,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HANDLE hBitmap, hOldBitmap;
 	BITMAP Bitmap;
 	GetClientRect(hWnd, &rec1);
-
 	switch (message)
 	{
 	case WM_CREATE:
@@ -178,10 +164,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT1)) 
 			Game(argc, argv);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT2)) 
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
 		if ((HIWORD(wParam)==0) && (LOWORD(wParam)==ID_BT3)) 
 			Exit = MessageBox(hWnd, "Do u want exit?", "Exit from game", MB_YESNO|MB_ICONQUESTION);
 			if(Exit == IDYES){
+				thr.~thread();
 				DestroyWindow(hWnd);
 			}
 		// Разобрать выбор в меню:
@@ -191,6 +178,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
 		case IDM_EXIT:
+			thr.~thread();
 			DestroyWindow(hWnd);
 			break;
 		case ID_32771:
@@ -242,7 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetBkColor(hdcExt, LTGRAY_BRUSH);
 			EndPaint(hExit, &ps3);
 		}
-		SnD = CreateThread(NULL, 0,ThreadProcSound,NULL,0,&SnDid);
+		//SnD = CreateThread(NULL, 0,ThreadProcSound,NULL,0,&SnDid);
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -460,15 +448,13 @@ void Game(int argc, char **argv)
 	gfx->init(argc, argv);
 }
 
-DWORD WINAPI ThreadProcSound(LPVOID lpParameter)
-{
+void Audio(){
 	list<string>pl;
-	pl = ReadConfigFromFile(PLAYLIST);
-	list<string>::iterator iter = pl.begin();
-	while(iter != pl.end()){
-		PlaySound((LPCSTR)iter->c_str(), NULL, SND_FILENAME);
-		PlaySound(NULL, 0, 0);
-		iter++;
-	}
-	return TRUE;
+		pl = ReadConfigFromFile(PLAYLIST);
+		list<string>::iterator iter = pl.begin();
+		while(iter != pl.end()){
+			PlaySound((LPCSTR)iter->c_str(), NULL, SND_FILENAME);
+			PlaySound(NULL, 0, 0);
+			iter++;
+		}
 }
