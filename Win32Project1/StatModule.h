@@ -1,6 +1,6 @@
 #ifndef StatModule
 #define StatModule
-#include <vector>
+#include <list>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -12,8 +12,8 @@ typedef struct
 	int score;
 }Stat;
 
-vector<Stat> ReadFromFile(char *filename);
+list<Stat> ReadFromFile(char *filename);
 Stat CreateStat(string str);
-string PrintToTextField(vector<Stat>::iterator iter);
+string PrintToTextField(list<Stat>::iterator iter);
 string WriteToFile(char *filename, string score);
 #endif //StatModule

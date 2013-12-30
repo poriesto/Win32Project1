@@ -2,10 +2,10 @@
 #include "StatModule.h"
 #define LENGTH_SCORE 10
 
-vector<Stat> ReadFromFile(char *filename)
+list<Stat> ReadFromFile(char *filename)
 {
 	ifstream data;
-	vector<Stat> V;
+	list<Stat> V;
 	string str;
 	Stat temp;
 	data.open(filename);
@@ -41,7 +41,7 @@ Stat CreateStat(string str){
 	return stat;
 }
 
-string PrintToTextField(vector<Stat>::iterator iter)
+string PrintToTextField(list<Stat>::iterator iter)
 {
 		string tmpName(iter->name);
 		int tmpScore(iter->score);

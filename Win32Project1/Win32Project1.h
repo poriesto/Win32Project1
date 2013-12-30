@@ -20,6 +20,11 @@
 #define GRAPHICS_MODE "../graphics.txt"
 #define BITMAP_PATH "../btm.bmp"
 #define PLAYLIST "../pl1.txt"
+#define ID_BT1 100    /* идентификатор для кнопочки внутри главного окна */
+#define ID_BT2 200	
+#define ID_BT3 300
+#define ID_LIST 120
+
 
 void Audio();
 void Game(int argc, char **argv);

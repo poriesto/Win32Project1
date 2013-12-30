@@ -4,10 +4,6 @@
 #include "Win32Project1.h"
 #define MAX_LOADSTRING 100
 #define WIN32_LEAN_AND_MEAN
-#define ID_BT1 100    /* идентификатор для кнопочки внутри главного окна */
-#define ID_BT2 200	
-#define ID_BT3 300
-#define ID_LIST 120
 
 // Глобальные переменные:
 HINSTANCE hInst;								// текущий экземпляр
@@ -23,8 +19,6 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Options(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	Records(HWND, UINT, WPARAM, LPARAM);
-void BitMap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param);
-
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPTSTR    lpCmdLine,
@@ -123,13 +117,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_COMMAND	- обработка меню приложения
 //  WM_PAINT	-Закрасить главное окно
 //  WM_DESTROY	 - ввести сообщение о выходе и вернуться.
-void Bitmap(HDC hdc, LPCSTR  Path, int x, int y, int Width, int Height, DWORD Param)
-{
-    HBITMAP bmp = (HBITMAP) LoadImage(NULL,Path,IMAGE_BITMAP,0,0,LR_LOADFROMFILE);
-    HDC memdc = CreateCompatibleDC(hdc);
-    SelectObject(memdc,bmp);
-    BitBlt(hdc,x,y,Width,Height,memdc,0,0,Param);
-}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -183,6 +170,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_32771:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG2), hWnd, Records);
+		case ID_32772:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Options);
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
@@ -230,7 +219,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetBkColor(hdcExt, LTGRAY_BRUSH);
 			EndPaint(hExit, &ps3);
 		}
-		//SnD = CreateThread(NULL, 0,ThreadProcSound,NULL,0,&SnDid);
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -389,8 +377,8 @@ INT_PTR CALLBACK Options(HWND DlgOptions, UINT message, WPARAM wParam, LPARAM lP
 
 INT_PTR CALLBACK Records(HWND DlgStat, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	vector<Stat> V;
-	vector<Stat>::iterator iter;
+	list<Stat> V;
+	list<Stat>::iterator iter;
 	HWND hwndList;
 	int i = 0;
 	switch(message)
